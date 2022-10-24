@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:freetaxi/widget/constant/colors/backgrondColor.dart';
+import 'package:freetaxi/widget/constant/colors/borderColor.dart';
 import 'package:freetaxi/widget/constant/colors/mainColor.dart';
 import 'package:freetaxi/widget/constant/colors/textColor.dart';
 import 'package:freetaxi/widget/customText.dart';
@@ -44,6 +46,7 @@ class CustomTextFormFild extends StatelessWidget {
           ),
           TextFormField(
             inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp(r'^0+')),
               LengthLimitingTextInputFormatter(maxLength),
             ],
             controller: controller,
@@ -52,12 +55,15 @@ class CustomTextFormFild extends StatelessWidget {
             validator: validator,
             onSaved: onsave,
             decoration: InputDecoration(
+              fillColor: bg_input,
+              filled: true,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: color),
               ),
               prefixIcon: Container(
-                margin: EdgeInsets.only(right: 15),
+                margin: EdgeInsets.only(right: 15, left: 5),
+                padding: EdgeInsets.only(left: 3),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -65,10 +71,14 @@ class CustomTextFormFild extends StatelessWidget {
                       iconsax,
                       color: text_1,
                     ),
-                    CustomText(
-                      fontsize: 24,
-                      text: '|',
-                      color: text_4,
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Container(
+                      width: 1,
+                      height: 24,
+                      color: divider,
+                      child: Text(''),
                     ),
                   ],
                 ),

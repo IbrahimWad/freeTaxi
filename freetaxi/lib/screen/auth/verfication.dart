@@ -25,7 +25,7 @@ class Verfication extends StatelessWidget {
               height: Get.height * .07,
             ),
             Form(
-              key: controller.formkey,
+              key: controller.OTPformkey,
               child: Column(children: [
                 CustomText(
                   fontsize: 18,
@@ -52,11 +52,22 @@ class Verfication extends StatelessWidget {
                   height: Get.height * 0.04,
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomText(
                       text: controller.seconds.toString(),
                       alignment: Alignment.center,
+                      fontsize: 32,
+                    ),
+                    CustomText(
+                      text: ':',
+                      alignment: Alignment.center,
+                      fontsize: 32,
+                    ),
+                    CustomText(
+                      text: '0',
+                      alignment: Alignment.topCenter,
                       fontsize: 32,
                     ),
                   ],
@@ -65,15 +76,27 @@ class Verfication extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       OtpTextformFiled(
+                          validator: (value) {
+                            controller.validateOtp(value);
+                          },
                           controller: controller.otpController1!,
                           color: primary),
                       OtpTextformFiled(
+                          validator: (value) {
+                            controller.validateOtp(value);
+                          },
                           controller: controller.otpController2!,
                           color: primary),
                       OtpTextformFiled(
+                          validator: (value) {
+                            controller.validateOtp(value);
+                          },
                           controller: controller.otpController3!,
                           color: primary),
                       OtpTextformFiled(
+                          validator: (value) {
+                            controller.validateOtp(value);
+                          },
                           controller: controller.otpController4!,
                           color: primary),
                     ]),
@@ -84,13 +107,27 @@ class Verfication extends StatelessWidget {
                   CustomText(text: 'لم يصلك الرمز بعد ؟'),
                   InkWell(
                       onTap: () {
-                        controller.startTimer();
+                        if (!controller.timer!.isActive) {
+                          controller.startTimer();
+                          print('error');
+                        }
                       },
                       child: CustomText(
                         text: 'اعادة ارسال الرمز',
                         color: primary,
-                      ))
+                      )),
                 ]),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.03,
+                ),
+                PrimaryButton(
+                    onPressed: () {
+                      controller.verfication();
+                    },
+                    color: bg_white,
+                    fontsize: 16,
+                    text: 'تأكيد الرمز',
+                    btColor: primary)
               ]),
             )
           ],

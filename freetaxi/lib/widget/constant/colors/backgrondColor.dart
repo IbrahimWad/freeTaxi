@@ -6,3 +6,4 @@ const Color bg_danger = Color(0xffFFEFED);
 const Color bg_warning = Color(0xffFFFAF0);
 const Color bg_success = Color(0xffF3FBF8);
 const Color bg_accent = Color(0xffF5EBFE);
+const Color bg_input = Color(0xffFAFAFA);

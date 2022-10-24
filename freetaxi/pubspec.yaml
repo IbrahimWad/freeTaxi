@@ -42,12 +42,22 @@ dependencies:
   shared_preferences: ^2.0.15
   flutter_localizations: # Add this line
     sdk: flutter 
+  http: ^0.13.5
+  get_storage: ^2.0.3
+  dio: ^4.0.6
+  flutter_launcher_icons: ^0.10.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/AppIcon.jpg"
+  min_sdk_android: 21
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
- 
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

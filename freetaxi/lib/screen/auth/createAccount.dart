@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:freetaxi/controller/authviewModel.dart';
 import 'package:freetaxi/screen/auth/login.dart';
@@ -16,8 +17,7 @@ class CreateAccount extends GetWidget<AuthviewModel> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       backgroundColor: bg_white,
       body: Form(
         key: controller.formkey,
@@ -30,7 +30,7 @@ class CreateAccount extends GetWidget<AuthviewModel> {
               Column(
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.20,
+                    height: MediaQuery.of(context).size.height * 0.16,
                   ),
                   CustomTextFormFild(
                     controller: controller.nameController!,
@@ -56,7 +56,7 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                     hint: 'ادخل رقم الهاتف',
                     iconsax: Iconsax.mobile,
                     color: primary,
-                    maxLength: 11,
+                    maxLength: 10,
                     onsave: (value) {
                       controller.phone = value;
                     },
@@ -79,15 +79,16 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                   ),
                   Obx(() => DropdownButtonHideUnderline(
                         child: Container(
+                          alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: Get.height * 0.075,
+                          height: 70,
                           width: Get.width - 30,
                           decoration: BoxDecoration(
-                            border: Border.all(color: text_3),
+                            color: bg_input,
+                            border: Border.all(color: text_2),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: DropdownButton(
-                            //alignment: Alignment.center,
                             borderRadius: BorderRadius.circular(12),
                             icon: CustomText(
                               fontWeight: FontWeight.normal,
@@ -99,10 +100,13 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                             ),
                             isExpanded: true,
                             hint: Icon(Icons.keyboard_arrow_down),
-                            alignment: Alignment.center,
+                            alignment: Alignment.bottomCenter,
                             items: controller.items.map((String items) {
                               return DropdownMenuItem(
-                                  value: items, child: Text(items));
+                                value: items,
+                                child: Text(items),
+                                alignment: AlignmentDirectional.center,
+                              );
                             }).toList(),
                             onChanged: (String? newValue) {
                               controller.selctedvalue.value = '$newValue';
@@ -159,7 +163,6 @@ class CreateAccount extends GetWidget<AuthviewModel> {
               PrimaryButton(
                 onPressed: () {
                   controller.SignUp();
-                  // controller.startTimer();
                 },
                 color: bg_white,
                 fontsize: 18,
@@ -167,8 +170,17 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                 btColor: primary,
               ),
               SizedBox(
-                height: Get.height * 0.05,
+                height: Get.height * 0.02,
               ),
+              Obx(() => CustomText(
+                    text: controller.value.value == false
+                        ? 'يرجى الموافقة على شروط الاتفاق'
+                        : '',
+                    color: danger,
+                    fontsize: 14,
+                    fontWeight: FontWeight.normal,
+                    alignment: Alignment.center,
+                  )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -179,6 +191,9 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                           controller.value.value = !controller.value.value;
                         },
                       )),
+                  SizedBox(
+                    height: Get.height * .02,
+                  ),
                   CustomText(
                     text: 'بمجرد انشاء حسابك انت توافق على',
                     alignment: Alignment.center,
@@ -194,6 +209,6 @@ class CreateAccount extends GetWidget<AuthviewModel> {
           ),
         ]),
       ),
-    ));
+    );
   }
 }
