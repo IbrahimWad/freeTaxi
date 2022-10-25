@@ -60,12 +60,12 @@ class Login extends GetWidget<AuthviewModel> {
                           controller.phone = value;
                         },
                         validator: (value) {
-                          return controller.validatePhone(value);
+                          // return controller.validatePhone(value);
                         },
                         controller: controller.phoneLoginController!,
                         keyboardType: TextInputType.number,
                         text: 'رقم الهاتف',
-                        hint: '07500000000',
+                        hint: '7500000000',
                         iconsax: Iconsax.mobile,
                         color: primary,
                         maxLength: 10)

@@ -55,6 +55,8 @@ class CustomTextFormFild extends StatelessWidget {
             validator: validator,
             onSaved: onsave,
             decoration: InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.fromLTRB(10, 17.25, 10, 17.25),
               fillColor: bg_input,
               filled: true,
               focusedBorder: OutlineInputBorder(
@@ -83,9 +85,21 @@ class CustomTextFormFild extends StatelessWidget {
                   ],
                 ),
               ),
-              border: OutlineInputBorder(
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: danger),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: danger)),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: divider),
                 borderRadius: BorderRadius.circular(12),
               ),
+              // border: OutlineInputBorder(
+              //   borderSide: BorderSide(color: divider),
+              //   borderRadius: BorderRadius.circular(12),
+              // ),
               hintText: hint,
             ),
           )

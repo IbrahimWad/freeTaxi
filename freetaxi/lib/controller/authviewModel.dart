@@ -162,6 +162,18 @@ class AuthviewModel extends GetxController {
     print(responseBody);
   }
 
+  resend() async {
+    final dio = Dio();
+    final res = await dio.post(
+      signOTP,
+      data: {'phone': "+964${phoneLoginController!.value.text}"},
+      options: Options(contentType: Headers.formUrlEncodedContentType),
+    );
+    var responseBody = res.data['otp'];
+    box.write('phone', '+964${phoneLoginController!.value.text}');
+    box.write('otp', responseBody);
+  }
+
   String? validatePhone(String value) {
     if (value.length != 10) {
       return 'الرجاء ادخال رقم هاتف صحيح';

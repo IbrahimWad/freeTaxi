@@ -10,6 +10,8 @@ import 'package:freetaxi/widget/otptextformfield.dart';
 import 'package:freetaxi/widget/primaryButton.dart';
 import 'package:get/get.dart';
 
+import '../../main.dart';
+
 class Verfication extends StatelessWidget {
   const Verfication({Key? key}) : super(key: key);
 
@@ -43,7 +45,7 @@ class Verfication extends StatelessWidget {
                     color: text_2,
                   ),
                   CustomText(
-                    text: '771234567',
+                    text: box.read('phone'),
                     color: primary,
                     fontsize: 16,
                   ),
@@ -66,7 +68,7 @@ class Verfication extends StatelessWidget {
                       fontsize: 32,
                     ),
                     CustomText(
-                      text: '0',
+                      text: '00',
                       alignment: Alignment.topCenter,
                       fontsize: 32,
                     ),
@@ -76,24 +78,36 @@ class Verfication extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       OtpTextformFiled(
+                          onChanged: (value) {
+                            FocusScope.of(context).nextFocus();
+                          },
                           validator: (value) {
                             controller.validateOtp(value);
                           },
                           controller: controller.otpController1!,
                           color: primary),
                       OtpTextformFiled(
+                          onChanged: (value) {
+                            FocusScope.of(context).nextFocus();
+                          },
                           validator: (value) {
                             controller.validateOtp(value);
                           },
                           controller: controller.otpController2!,
                           color: primary),
                       OtpTextformFiled(
+                          onChanged: (value) {
+                            FocusScope.of(context).nextFocus();
+                          },
                           validator: (value) {
                             controller.validateOtp(value);
                           },
                           controller: controller.otpController3!,
                           color: primary),
                       OtpTextformFiled(
+                          onChanged: (value) {
+                            FocusScope.of(context).nextFocus();
+                          },
                           validator: (value) {
                             controller.validateOtp(value);
                           },

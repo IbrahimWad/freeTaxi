@@ -6,10 +6,12 @@ class OtpTextformFiled extends StatelessWidget {
   final TextEditingController controller;
   var validator;
   var onsave;
+  var onChanged;
   final Color color;
   OtpTextformFiled({
     Key? key,
     required this.controller,
+    required this.onChanged,
     this.validator,
     required this.color,
     this.onsave,
@@ -23,11 +25,13 @@ class OtpTextformFiled extends StatelessWidget {
         textInputAction: TextInputAction.next,
         inputFormatters: [
           LengthLimitingTextInputFormatter(1),
+          FilteringTextInputFormatter.digitsOnly,
         ],
         controller: controller,
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         validator: validator,
+        onChanged: onChanged,
         onSaved: onsave,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(

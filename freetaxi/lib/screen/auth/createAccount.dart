@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freetaxi/controller/authviewModel.dart';
 import 'package:freetaxi/screen/auth/login.dart';
 import 'package:freetaxi/widget/constant/colors/backgrondColor.dart';
+import 'package:freetaxi/widget/constant/colors/borderColor.dart';
 import 'package:freetaxi/widget/constant/colors/mainColor.dart';
 import 'package:freetaxi/widget/constant/colors/textColor.dart';
 import 'package:freetaxi/widget/customText.dart';
@@ -38,7 +39,12 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                       controller.name = value;
                     },
                     validator: (value) {
-                      return controller.validatename(value);
+                      if (value.isNotEmpty && value.length > 6) {
+                        return null;
+                      } else if (value.isNotEmpty && value.length <= 6) {
+                        return 'الرجاء قم بادخال الاسم الكامل';
+                      }
+                      // return controller.validatename(value);
                     },
                     text: 'الاسم الكامل',
                     hint: 'ع.م احمد علي',
@@ -49,20 +55,38 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.03,
                   ),
-                  CustomTextFormFild(
-                    controller: controller.phoneController!,
-                    keyboardType: TextInputType.number,
-                    text: 'رقم الهاتف',
-                    hint: 'ادخل رقم الهاتف',
-                    iconsax: Iconsax.mobile,
-                    color: primary,
-                    maxLength: 10,
-                    onsave: (value) {
-                      controller.phone = value;
-                    },
-                    validator: (value) {
-                      return controller.validatePhone(value);
-                    },
+                  Stack(
+                    children: [
+                      CustomTextFormFild(
+                        //labelText: '+964',
+                        controller: controller.phoneController!,
+                        keyboardType: TextInputType.number,
+                        text: 'رقم الهاتف',
+                        hint: 'ادخل رقم الهاتف',
+                        iconsax: Iconsax.mobile,
+                        color: primary,
+                        maxLength: 10,
+                        onsave: (value) {
+                          controller.phone = value;
+                        },
+                        validator: (value) {
+                          if (value.length != 10 && value.isNotEmpty) {
+                            return 'الرجاء ادخال رقم هاتف صحيح';
+                          } else if (value.isNotEmpty) {
+                            return null;
+                          }
+                        },
+                      ),
+                      Positioned(
+                          top: 20,
+                          bottom: 20,
+                          left: 32,
+                          right: 20,
+                          child: CustomText(
+                            color: primary,
+                            text: '964+',
+                          )),
+                    ],
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.03,
@@ -80,32 +104,35 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                   Obx(() => DropdownButtonHideUnderline(
                         child: Container(
                           alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: 70,
+                          padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
                           width: Get.width - 30,
                           decoration: BoxDecoration(
                             color: bg_input,
-                            border: Border.all(color: text_2),
+                            border: Border.all(color: divider),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: DropdownButton(
                             borderRadius: BorderRadius.circular(12),
-                            icon: CustomText(
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                            ),
+                            isExpanded: true,
+                            hint: CustomText(
                               fontWeight: FontWeight.normal,
-                              color: text_3,
+                              color: controller.selctedvalue.value == ''
+                                  ? divider
+                                  : text_1,
                               text: controller.selctedvalue.value == ''
                                   ? 'اختار الجنس'
                                   : controller.selctedvalue.value,
-                              alignment: Alignment.center,
+                              alignment: Alignment.centerRight,
                             ),
-                            isExpanded: true,
-                            hint: Icon(Icons.keyboard_arrow_down),
                             alignment: Alignment.bottomCenter,
                             items: controller.items.map((String items) {
                               return DropdownMenuItem(
                                 value: items,
                                 child: Text(items),
-                                alignment: AlignmentDirectional.center,
+                                alignment: AlignmentDirectional.centerStart,
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
@@ -116,7 +143,7 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                         ),
                       )),
                   Obx(() => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: CustomText(
                           text: controller.selctedvalue.value == ''
                               ? 'الرجاء قم بتحديد نوع الجنس'
