@@ -23,7 +23,7 @@ class OnBording extends GetWidget<OnBordingController> {
           Container(
             height: MediaQuery.of(context).size.height * 0.7,
             child: RiveAnimation.asset(
-              'assets/animation/taxifree-intro.riv',
+              'assets/animation/rihlati-intro.riv',
               alignment: Alignment.center,
               fit: BoxFit.cover,
               onInit: controller.togglePlay(),

@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:freetaxi/controller/authviewModel.dart';
 import 'package:freetaxi/screen/auth/login.dart';
 import 'package:freetaxi/widget/constant/colors/backgrondColor.dart';
@@ -12,6 +13,8 @@ import 'package:freetaxi/widget/customeCheackBox.dart';
 import 'package:freetaxi/widget/primaryButton.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+
+import '../../widget/constant/customDropDownButton.dart';
 
 class CreateAccount extends GetWidget<AuthviewModel> {
   CreateAccount({Key? key}) : super(key: key);
@@ -77,15 +80,15 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                           }
                         },
                       ),
-                      Positioned(
-                          top: 20,
-                          bottom: 20,
-                          left: 32,
-                          right: 20,
-                          child: CustomText(
-                            color: primary,
-                            text: '964+',
-                          )),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 46),
+                        child: CustomText(
+                          alignment: Alignment.centerLeft,
+                          text: '964+',
+                          color: primary,
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -101,59 +104,17 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                       color: text_1,
                     ),
                   ),
-                  Obx(() => DropdownButtonHideUnderline(
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
-                          width: Get.width - 30,
-                          decoration: BoxDecoration(
-                            color: bg_input,
-                            border: Border.all(color: divider),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: DropdownButton(
-                            borderRadius: BorderRadius.circular(12),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                            ),
-                            isExpanded: true,
-                            hint: CustomText(
-                              fontWeight: FontWeight.normal,
-                              color: controller.selctedvalue.value == ''
-                                  ? divider
-                                  : text_1,
-                              text: controller.selctedvalue.value == ''
-                                  ? 'اختار الجنس'
-                                  : controller.selctedvalue.value,
-                              alignment: Alignment.centerRight,
-                            ),
-                            alignment: Alignment.bottomCenter,
-                            items: controller.items.map((String items) {
-                              return DropdownMenuItem(
-                                value: items,
-                                child: Text(items),
-                                alignment: AlignmentDirectional.centerStart,
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              controller.selctedvalue.value = '$newValue';
-                              print(newValue);
-                            },
-                          ),
-                        ),
-                      )),
-                  Obx(() => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: CustomText(
-                          text: controller.selctedvalue.value == ''
-                              ? 'الرجاء قم بتحديد نوع الجنس'
-                              : '',
-                          color: danger,
-                          alignment: Alignment.centerRight,
-                          fontWeight: FontWeight.normal,
-                          fontsize: 14,
-                        ),
-                      )),
+                  CustomDropDownButton(
+                      hint: CustomText(
+                        text: 'اختر الجنس',
+                        fontWeight: FontWeight.normal,
+                        color: text_3,
+                        alignment: Alignment.topRight,
+                      ),
+                      selectedValue: controller.selctedvalue.value,
+                      onChanged: (value) {
+                        controller.selctedvalue.value = value;
+                      }),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.07,
                   ),

@@ -55,20 +55,33 @@ class Login extends GetWidget<AuthviewModel> {
                     height: Get.height * .05,
                   ),
                   Column(children: [
-                    CustomTextFormFild(
-                        onsave: (value) {
-                          controller.phone = value;
-                        },
-                        validator: (value) {
-                          // return controller.validatePhone(value);
-                        },
-                        controller: controller.phoneLoginController!,
-                        keyboardType: TextInputType.number,
-                        text: 'رقم الهاتف',
-                        hint: '7500000000',
-                        iconsax: Iconsax.mobile,
-                        color: primary,
-                        maxLength: 10)
+                    Stack(
+                      children: [
+                        CustomTextFormFild(
+                            onsave: (value) {
+                              controller.phone = value;
+                            },
+                            validator: (value) {
+                              // return controller.validatePhone(value);
+                            },
+                            controller: controller.phoneLoginController!,
+                            keyboardType: TextInputType.number,
+                            text: 'رقم الهاتف',
+                            hint: '7500000000',
+                            iconsax: Iconsax.mobile,
+                            color: primary,
+                            maxLength: 10),
+                        Positioned(
+                            top: 20,
+                            bottom: 20,
+                            left: 32,
+                            right: 20,
+                            child: CustomText(
+                              color: primary,
+                              text: '964+',
+                            )),
+                      ],
+                    )
                   ]),
                   SizedBox(
                     height: Get.height * .1,
@@ -77,6 +90,13 @@ class Login extends GetWidget<AuthviewModel> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      CustomText(
+                        text: 'لا تملك حساب؟',
+                        alignment: Alignment.center,
+                        color: text_1,
+                        fontsize: 16,
+                        height: 1,
+                      ),
                       InkWell(
                         onTap: () {
                           Get.off(Login());
@@ -93,13 +113,6 @@ class Login extends GetWidget<AuthviewModel> {
                             height: 1,
                           ),
                         ),
-                      ),
-                      CustomText(
-                        text: 'لا تملك حساب؟',
-                        alignment: Alignment.center,
-                        color: text_1,
-                        fontsize: 16,
-                        height: 1,
                       ),
                     ],
                   ),
