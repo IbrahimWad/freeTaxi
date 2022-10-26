@@ -42,12 +42,11 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                       controller.name = value;
                     },
                     validator: (value) {
-                      if (value.isNotEmpty && value.length > 6) {
+                      if (value.length < 6 && value.isNotEmpty) {
+                        return 'الرجاء ادخال رقم هاتف صحيح';
+                      } else if (value.isNotEmpty) {
                         return null;
-                      } else if (value.isNotEmpty && value.length <= 6) {
-                        return 'الرجاء قم بادخال الاسم الكامل';
                       }
-                      // return controller.validatename(value);
                     },
                     text: 'الاسم الكامل',
                     hint: 'ع.م احمد علي',
@@ -150,7 +149,9 @@ class CreateAccount extends GetWidget<AuthviewModel> {
               ),
               PrimaryButton(
                 onPressed: () {
-                  controller.SignUp();
+                  if (controller.seconds == 59) {
+                    controller.SignUp();
+                  }
                 },
                 color: bg_white,
                 fontsize: 18,

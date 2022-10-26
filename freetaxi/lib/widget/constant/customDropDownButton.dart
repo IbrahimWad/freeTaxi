@@ -30,6 +30,7 @@ class CustomDropDownButton extends StatelessWidget {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: FormBuilderDropdown(
+            elevation: 2,
             decoration: InputDecoration(
                 filled: true,
                 fillColor: bg_input,
@@ -47,7 +48,7 @@ class CustomDropDownButton extends StatelessWidget {
             onChanged: onChanged,
             hint: hint,
             validator: (value) {
-              if (value == null) {
+              if (value.isNull) {
                 return 'الرجاء قم بتحديد نوع الجنس';
               }
             },

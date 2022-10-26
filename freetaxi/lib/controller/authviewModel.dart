@@ -4,18 +4,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freetaxi/main.dart';
-import 'package:freetaxi/model/auth/authModel.dart';
-import 'package:freetaxi/model/auth/sign_otp.dart';
+import 'package:freetaxi/screen/auth/login.dart';
 import 'package:freetaxi/screen/home/HomePage.dart';
 import 'package:freetaxi/widget/constant/Api/mainUrl.dart';
 import 'package:freetaxi/widget/constant/colors/backgrondColor.dart';
 import 'package:freetaxi/widget/constant/colors/mainColor.dart';
+import 'package:freetaxi/widget/customText.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
-import '../screen/auth/login.dart';
 import '../screen/auth/verfication.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:alt_sms_autofill/alt_sms_autofill.dart';
 
 class AuthviewModel extends GetxController {
   var value = true.obs;
@@ -41,6 +40,8 @@ class AuthviewModel extends GetxController {
   var otp2 = '';
   var otp3 = '';
   var otp4 = '';
+
+  BuildContext get context => context;
   @override
   void onInit() {
     super.onInit();
@@ -56,6 +57,12 @@ class AuthviewModel extends GetxController {
   @override
   void onClose() {
     super.onClose();
+  }
+
+  @override
+  void dispose() {
+    AltSmsAutofill().unregisterListener();
+    super.dispose();
   }
 
   selectValue() {
@@ -91,25 +98,38 @@ class AuthviewModel extends GetxController {
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
+    var responseBody = res.data;
+    print(responseBody);
+    print(res.data['message']);
+
     // box.write('phone', "+964${phoneController!.value.text}");
     if (res.data['message'] == 'User Already Registered!') {
-      // Get.showSnackbar(
-      //   GetBar(
-      //     message: 'U alredy',
-      //     snackPosition: SnackPosition.TOP,
-      //    // titleText: BigText(text: title, color: Colors.white),
-      //     backgroundColor: bg_warning,
-      //   ),
-      // );
+      Get.showSnackbar(GetBar(
+          messageText: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomText(text: 'انت تمتلك حساب بالفعل'),
+              InkWell(
+                onTap: () {
+                  Get.off(Login());
+                },
+                child: CustomText(text: 'تسجيل الدخول', color: warning),
+              )
+            ],
+          ),
+          // colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: bg_warning));
     } else {
       final response = await dio.post(signOTP,
           data: {
             'phone': "+964${phoneController!.value.text}",
           },
           options: Options(contentType: Headers.formUrlEncodedContentType));
-      var responseBody = res.data;
+
       var responsBody = res.data['otp'];
       box.write('otp', responsBody);
+
       print(responseBody);
       startTimer();
       Get.off(Verfication());
@@ -117,9 +137,36 @@ class AuthviewModel extends GetxController {
 
       print('error here');
     }
+
+    String? commingSms;
+    try {
+      commingSms = await AltSmsAutofill().listenForSms;
+      final res = await dio.post(
+        verifyOTP,
+        data: {
+          'phone': box.read('phone'),
+          'hashedOTP': box.read('otp'),
+          'otp': commingSms,
+        },
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      );
+      Get.off(HomePage());
+    } on PlatformException {
+      commingSms = 'Failed to get Sms.';
+      print(commingSms);
+    }
+    if (Get.routing.current != "/Verfication") return;
+    _commingSms = commingSms;
+
+    print(_commingSms);
   }
 
   login() async {
+    // if (!mounted) {
+    //   _commingSms = commingSms;
+    //   update();
+    // }
+
     final isValid = loginKey.currentState!.validate();
     if (!isValid) {
       return;
@@ -136,14 +183,37 @@ class AuthviewModel extends GetxController {
     box.write('phone', '+964${phoneLoginController!.value.text}');
     box.write('otp', responseBody);
     print(responseBody);
+    startTimer();
 
     Get.off(Verfication());
-    startTimer();
+    String? commingSms;
+    try {
+      commingSms = await AltSmsAutofill().listenForSms;
+      final res = await dio.post(
+        verifyOTP,
+        data: {
+          'phone': box.read('phone'),
+          'hashedOTP': box.read('otp'),
+          'otp': commingSms,
+        },
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      );
+      Get.off(HomePage());
+    } on PlatformException {
+      commingSms = 'Failed to get Sms.';
+      print(commingSms);
+    }
+    if (Get.routing.current != "/Verfication") return;
+    _commingSms = commingSms;
+
     printError();
   }
 
+  String? _commingSms = 'SignOTP';
+
   verfication() async {
     final dio = Dio();
+
     print(
         '${otpController1!.value.text}${otpController2!.value.text}${otpController3!.value.text}${otpController4!.value.text}');
     final res = await dio.post(

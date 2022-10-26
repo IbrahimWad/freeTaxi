@@ -47,6 +47,8 @@ dependencies:
   dio: ^4.0.6
   flutter_launcher_icons: ^0.10.0
   flutter_form_builder: ^7.7.0
+  alt_sms_autofill: ^1.0.0
+  
 
 flutter_icons:
   android: true
