@@ -13,7 +13,8 @@ class HomePage extends StatelessWidget {
     return Scaffold(
         backgroundColor: bg_white,
         body: Center(
-          child: CustomText(text: 'اهلا بك في رحلاتي'),
+          child: CustomText(
+              text: 'اهلا بك في رحلاتي', alignment: Alignment.center),
         ));
   }
 }

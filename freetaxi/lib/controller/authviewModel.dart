@@ -17,6 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:alt_sms_autofill/alt_sms_autofill.dart';
 
 class AuthviewModel extends GetxController {
+  GlobalKey<ScaffoldState>? homeScaffoldKey = new GlobalKey<ScaffoldState>();
+
   var value = true.obs;
   var selctedvalue = ''.obs;
   var items = [
@@ -52,6 +54,7 @@ class AuthviewModel extends GetxController {
     otpController3 = TextEditingController();
     otpController4 = TextEditingController();
     phoneLoginController = TextEditingController();
+    startTimer();
   }
 
   @override
@@ -74,6 +77,7 @@ class AuthviewModel extends GetxController {
   }
 
   final _postSingup = GetConnect();
+  // ignore: non_constant_identifier_names
   void SignUp() async {
     final isValid = formkey.currentState!.validate();
     if (!isValid) {
@@ -102,15 +106,19 @@ class AuthviewModel extends GetxController {
     print(responseBody);
     print(res.data['message']);
 
-    // box.write('phone', "+964${phoneController!.value.text}");
     if (res.data['message'] == 'User Already Registered!') {
       Get.showSnackbar(GetBar(
+          key: homeScaffoldKey,
+          duration: Duration(seconds: 5),
           messageText: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomText(text: 'انت تمتلك حساب بالفعل'),
               InkWell(
                 onTap: () {
+                  homeScaffoldKey?.currentState!
+                      .removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
+
                   Get.off(Login());
                 },
                 child: CustomText(text: 'تسجيل الدخول', color: warning),
@@ -131,42 +139,40 @@ class AuthviewModel extends GetxController {
       box.write('otp', responsBody);
 
       print(responseBody);
-      startTimer();
-      Get.off(Verfication());
+
       printError();
 
       print('error here');
-    }
+      startTimer();
+      Get.off(Verfication());
 
-    String? commingSms;
-    try {
-      commingSms = await AltSmsAutofill().listenForSms;
-      final res = await dio.post(
-        verifyOTP,
-        data: {
-          'phone': box.read('phone'),
-          'hashedOTP': box.read('otp'),
-          'otp': commingSms,
-        },
-        options: Options(contentType: Headers.formUrlEncodedContentType),
-      );
-      Get.off(HomePage());
-    } on PlatformException {
-      commingSms = 'Failed to get Sms.';
-      print(commingSms);
-    }
-    if (Get.routing.current != "/Verfication") return;
-    _commingSms = commingSms;
+      String? commingSms;
 
-    print(_commingSms);
+      try {
+        commingSms = await AltSmsAutofill().listenForSms;
+        final res = await dio.post(
+          verifyOTP,
+          data: {
+            'phone': box.read('phone'),
+            'hashedOTP': box.read('otp'),
+            'otp': commingSms,
+          },
+          options: Options(contentType: Headers.formUrlEncodedContentType),
+        );
+        Get.off(HomePage());
+      } on PlatformException {
+        commingSms = 'Failed to get Sms.';
+        print(commingSms);
+      }
+      if (Get.routing.current != "/Verfication") return;
+      _commingSms = commingSms;
+
+      print(_commingSms);
+    }
+    startTimer();
   }
 
   login() async {
-    // if (!mounted) {
-    //   _commingSms = commingSms;
-    //   update();
-    // }
-
     final isValid = loginKey.currentState!.validate();
     if (!isValid) {
       return;
@@ -184,7 +190,6 @@ class AuthviewModel extends GetxController {
     box.write('otp', responseBody);
     print(responseBody);
     startTimer();
-
     Get.off(Verfication());
     String? commingSms;
     try {
@@ -207,6 +212,7 @@ class AuthviewModel extends GetxController {
     _commingSms = commingSms;
 
     printError();
+    stopTimer();
   }
 
   String? _commingSms = 'SignOTP';
@@ -228,12 +234,12 @@ class AuthviewModel extends GetxController {
     );
     var responseBody = res.data['token'];
     Get.off(HomePage());
-
     print(responseBody);
   }
 
   resend() async {
     final dio = Dio();
+    startTimer();
     final res = await dio.post(
       signOTP,
       data: {'phone': "+964${phoneLoginController!.value.text}"},

@@ -38,10 +38,10 @@
             android:value="2" />
             <receiver android:name="com.shounakmulay.telephony.sms.IncomingSmsReceiver"
 		    android:permission="android.permission.BROADCAST_SMS" android:exported="true">
-            <intent-filter>
+            <!-- <intent-filter>
             ...
             <action android:name="com.client.gaitlink.CommunicationService.action.LOGIN_STATUS_UPDATE" />
-        </intent-filter>
+        </intent-filter> -->
 		    <!-- <intent-filter>
 			<action android:name="android.provider.Telephony.SMS_RECEIVED"/>
 		    </intent-filter> -->

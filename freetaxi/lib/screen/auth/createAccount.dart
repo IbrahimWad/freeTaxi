@@ -42,8 +42,10 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                       controller.name = value;
                     },
                     validator: (value) {
-                      if (value.length < 6 && value.isNotEmpty) {
-                        return 'الرجاء ادخال رقم هاتف صحيح';
+                      if (value.length < 6 ||
+                          value.isNotEmpty &&
+                              !RegExp("[a-z A-Z ا-ي]").hasMatch(value)) {
+                        return 'الرجاء قم بإدخال الاسم';
                       } else if (value.isNotEmpty) {
                         return null;
                       }
@@ -91,7 +93,7 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                     ],
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.03,
+                    height: MediaQuery.of(context).size.height * 0.015,
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
@@ -149,9 +151,7 @@ class CreateAccount extends GetWidget<AuthviewModel> {
               ),
               PrimaryButton(
                 onPressed: () {
-                  if (controller.seconds == 59) {
-                    controller.SignUp();
-                  }
+                  controller.SignUp();
                 },
                 color: bg_white,
                 fontsize: 18,

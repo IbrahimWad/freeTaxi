@@ -121,9 +121,7 @@ class Verfication extends StatelessWidget {
                   CustomText(text: 'لم يصلك الرمز بعد ؟'),
                   InkWell(
                       onTap: () {
-                        if (controller.seconds == 59) {
-                          controller.resend();
-                        }
+                        controller.resend();
 
                         print('error');
                       },
