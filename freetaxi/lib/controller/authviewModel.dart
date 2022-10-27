@@ -17,8 +17,6 @@ import 'package:flutter/services.dart';
 import 'package:alt_sms_autofill/alt_sms_autofill.dart';
 
 class AuthviewModel extends GetxController {
-  GlobalKey<ScaffoldState>? homeScaffoldKey = new GlobalKey<ScaffoldState>();
-
   var value = true.obs;
   var selctedvalue = ''.obs;
   var items = [
@@ -43,7 +41,7 @@ class AuthviewModel extends GetxController {
   var otp3 = '';
   var otp4 = '';
 
-  BuildContext get context => context;
+  bool isloading = false;
   @override
   void onInit() {
     super.onInit();
@@ -54,7 +52,7 @@ class AuthviewModel extends GetxController {
     otpController3 = TextEditingController();
     otpController4 = TextEditingController();
     phoneLoginController = TextEditingController();
-    startTimer();
+    //startTimer();
   }
 
   @override
@@ -77,6 +75,7 @@ class AuthviewModel extends GetxController {
   }
 
   final _postSingup = GetConnect();
+
   // ignore: non_constant_identifier_names
   void SignUp() async {
     final isValid = formkey.currentState!.validate();
@@ -89,8 +88,18 @@ class AuthviewModel extends GetxController {
     if (selctedvalue.value == '') {
       return;
     }
+    if (isloading == true) {
+      Get.defaultDialog(
+          contentPadding: EdgeInsets.all(10),
+          backgroundColor: Colors.white.withOpacity(0.4),
+          title: 'رجاء الانتظار',
+          content: const CircularProgressIndicator(
+            color: primary,
+          ));
+    }
     formkey.currentState!.save();
     print(selctedvalue.value);
+    isloading = true;
 
     final dio = Dio();
     final res = await dio.post(
@@ -108,7 +117,6 @@ class AuthviewModel extends GetxController {
 
     if (res.data['message'] == 'User Already Registered!') {
       Get.showSnackbar(GetBar(
-          key: homeScaffoldKey,
           duration: Duration(seconds: 5),
           messageText: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -116,9 +124,6 @@ class AuthviewModel extends GetxController {
               CustomText(text: 'انت تمتلك حساب بالفعل'),
               InkWell(
                 onTap: () {
-                  homeScaffoldKey?.currentState!
-                      .removeCurrentSnackBar(reason: SnackBarClosedReason.hide);
-
                   Get.off(Login());
                 },
                 child: CustomText(text: 'تسجيل الدخول', color: warning),
@@ -169,7 +174,8 @@ class AuthviewModel extends GetxController {
 
       print(_commingSms);
     }
-    startTimer();
+    isloading = false;
+    update();
   }
 
   login() async {
@@ -177,6 +183,19 @@ class AuthviewModel extends GetxController {
     if (!isValid) {
       return;
     }
+    isloading = true;
+
+    if (isloading == true) {
+      Get.defaultDialog(
+          contentPadding: EdgeInsets.all(10),
+          barrierDismissible: false,
+          backgroundColor: Colors.white.withOpacity(0.4),
+          title: 'رجاء الانتظار',
+          content: const CircularProgressIndicator(
+            color: primary,
+          ));
+    }
+
     print("${phoneLoginController!.value.text} also");
     loginKey.currentState!.save();
     final dio = Dio();
@@ -212,6 +231,9 @@ class AuthviewModel extends GetxController {
     _commingSms = commingSms;
 
     printError();
+    isloading = false;
+    update();
+
     stopTimer();
   }
 
@@ -222,6 +244,8 @@ class AuthviewModel extends GetxController {
 
     print(
         '${otpController1!.value.text}${otpController2!.value.text}${otpController3!.value.text}${otpController4!.value.text}');
+    isloading = true;
+
     final res = await dio.post(
       verifyOTP,
       data: {
@@ -233,6 +257,9 @@ class AuthviewModel extends GetxController {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     var responseBody = res.data['token'];
+    isloading = false;
+    update();
+
     Get.off(HomePage());
     print(responseBody);
   }
