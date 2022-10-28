@@ -14,7 +14,7 @@ import 'package:freetaxi/widget/primaryButton.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../widget/constant/customDropDownButton.dart';
+import '../../widget/customDropDownButton.dart';
 
 class CreateAccount extends GetWidget<AuthviewModel> {
   CreateAccount({Key? key}) : super(key: key);
@@ -135,6 +135,7 @@ class CreateAccount extends GetWidget<AuthviewModel> {
                   InkWell(
                     onTap: () {
                       Get.off(Login());
+                      Get.closeCurrentSnackbar();
                     },
                     child: CustomText(
                       text: 'تسجيل الدخول',

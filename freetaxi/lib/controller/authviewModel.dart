@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freetaxi/main.dart';
+import 'package:freetaxi/screen/auth/createAccount.dart';
 import 'package:freetaxi/screen/auth/login.dart';
 import 'package:freetaxi/screen/home/HomePage.dart';
 import 'package:freetaxi/widget/constant/Api/mainUrl.dart';
@@ -88,9 +89,11 @@ class AuthviewModel extends GetxController {
     if (selctedvalue.value == '') {
       return;
     }
+    isloading = true;
     if (isloading == true) {
       Get.defaultDialog(
           contentPadding: EdgeInsets.all(10),
+          barrierDismissible: false,
           backgroundColor: Colors.white.withOpacity(0.4),
           title: 'رجاء الانتظار',
           content: const CircularProgressIndicator(
@@ -99,7 +102,6 @@ class AuthviewModel extends GetxController {
     }
     formkey.currentState!.save();
     print(selctedvalue.value);
-    isloading = true;
 
     final dio = Dio();
     final res = await dio.post(
@@ -111,13 +113,17 @@ class AuthviewModel extends GetxController {
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
+
     var responseBody = res.data;
     print(responseBody);
     print(res.data['message']);
+    isloading = false;
+    if (isloading == false) {
+      Get.back();
+    }
 
     if (res.data['message'] == 'User Already Registered!') {
       Get.showSnackbar(GetBar(
-          duration: Duration(seconds: 5),
           messageText: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -125,6 +131,7 @@ class AuthviewModel extends GetxController {
               InkWell(
                 onTap: () {
                   Get.off(Login());
+                  Get.closeCurrentSnackbar();
                 },
                 child: CustomText(text: 'تسجيل الدخول', color: warning),
               )
@@ -133,6 +140,7 @@ class AuthviewModel extends GetxController {
           // colorText: Colors.white,
           snackPosition: SnackPosition.TOP,
           backgroundColor: bg_warning));
+      isloading = false;
     } else {
       final response = await dio.post(signOTP,
           data: {
@@ -152,7 +160,11 @@ class AuthviewModel extends GetxController {
       Get.off(Verfication());
 
       String? commingSms;
-
+      isloading = false;
+      if (isloading == false) {
+        Get.back();
+        print('hello');
+      }
       try {
         commingSms = await AltSmsAutofill().listenForSms;
         final res = await dio.post(
@@ -165,6 +177,7 @@ class AuthviewModel extends GetxController {
           options: Options(contentType: Headers.formUrlEncodedContentType),
         );
         Get.off(HomePage());
+        Get.closeCurrentSnackbar();
       } on PlatformException {
         commingSms = 'Failed to get Sms.';
         print(commingSms);
@@ -174,7 +187,7 @@ class AuthviewModel extends GetxController {
 
       print(_commingSms);
     }
-    isloading = false;
+
     update();
   }
 
@@ -205,33 +218,42 @@ class AuthviewModel extends GetxController {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     var responseBody = res.data['otp'];
-    box.write('phone', '+964${phoneLoginController!.value.text}');
-    box.write('otp', responseBody);
-    print(responseBody);
-    startTimer();
-    Get.off(Verfication());
-    String? commingSms;
-    try {
-      commingSms = await AltSmsAutofill().listenForSms;
-      final res = await dio.post(
-        verifyOTP,
-        data: {
-          'phone': box.read('phone'),
-          'hashedOTP': box.read('otp'),
-          'otp': commingSms,
-        },
-        options: Options(contentType: Headers.formUrlEncodedContentType),
-      );
-      Get.off(HomePage());
-    } on PlatformException {
-      commingSms = 'Failed to get Sms.';
-      print(commingSms);
+    var check = res.data['message'];
+    if (check == "SMS Message Sent Successfully!") {
+      box.write('phone', '+964${phoneLoginController!.value.text}');
+      box.write('otp', responseBody);
+      print(responseBody);
+      startTimer();
+      Get.off(Verfication());
+      String? commingSms;
+      try {
+        commingSms = await AltSmsAutofill().listenForSms;
+        final res = await dio.post(
+          verifyOTP,
+          data: {
+            'phone': box.read('phone'),
+            'hashedOTP': box.read('otp'),
+            'otp': commingSms,
+          },
+          options: Options(contentType: Headers.formUrlEncodedContentType),
+        );
+        Get.closeCurrentSnackbar();
+
+        Get.off(HomePage());
+      } on PlatformException {
+        commingSms = 'Failed to get Sms.';
+        print(commingSms);
+      }
+      if (Get.routing.current != "/Verfication") return;
+      _commingSms = commingSms;
     }
-    if (Get.routing.current != "/Verfication") return;
-    _commingSms = commingSms;
 
     printError();
     isloading = false;
+    if (isloading == false) {
+      Get.back();
+    }
+
     update();
 
     stopTimer();
@@ -258,10 +280,27 @@ class AuthviewModel extends GetxController {
     );
     var responseBody = res.data['token'];
     isloading = false;
-    update();
 
-    Get.off(HomePage());
+    var check = res.data['message'];
+    if (check == 'OTP Is Not Valid!') {
+      Get.showSnackbar(GetBar(
+          messageText: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomText(text: 'الرمز غير صحيح'),
+            ],
+          ),
+          onTap: (SnackBar) {
+            Get.closeCurrentSnackbar();
+          },
+          // colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: bg_warning));
+    } else {
+      Get.off(HomePage());
+    }
     print(responseBody);
+    update();
   }
 
   resend() async {
@@ -269,7 +308,7 @@ class AuthviewModel extends GetxController {
     startTimer();
     final res = await dio.post(
       signOTP,
-      data: {'phone': "+964${phoneLoginController!.value.text}"},
+      data: {'phone': box.read('phone')},
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     var responseBody = res.data['otp'];

@@ -62,7 +62,7 @@ class Login extends GetWidget<AuthviewModel> {
                               controller.phone = value;
                             },
                             validator: (value) {
-                              // return controller.validatePhone(value);
+                              return controller.validatePhone(value);
                             },
                             controller: controller.phoneLoginController!,
                             keyboardType: TextInputType.number,
@@ -71,15 +71,15 @@ class Login extends GetWidget<AuthviewModel> {
                             iconsax: Iconsax.mobile,
                             color: primary,
                             maxLength: 10),
-                        Positioned(
-                            top: 20,
-                            bottom: 20,
-                            left: 32,
-                            right: 20,
-                            child: CustomText(
-                              color: primary,
-                              text: '964+',
-                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 46),
+                          child: CustomText(
+                            alignment: Alignment.centerLeft,
+                            text: '964+',
+                            color: primary,
+                          ),
+                        ),
                       ],
                     )
                   ]),
@@ -126,6 +126,7 @@ class Login extends GetWidget<AuthviewModel> {
                     fontsize: 18,
                     onPressed: () {
                       controller.login();
+                      Get.closeCurrentSnackbar();
                     },
                   ),
                 ],

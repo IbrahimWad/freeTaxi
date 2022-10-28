@@ -114,8 +114,9 @@ class Verfication extends StatelessWidget {
                           controller: controller.otpController4!,
                           color: primary),
                     ]),
+
                 SizedBox(
-                  height: Get.height * .08,
+                  height: Get.height * .06,
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   CustomText(text: 'لم يصلك الرمز بعد ؟'),
@@ -135,6 +136,8 @@ class Verfication extends StatelessWidget {
                 ),
                 PrimaryButton(
                     onPressed: () {
+                      Get.closeCurrentSnackbar();
+
                       controller.verfication();
                     },
                     color: bg_white,

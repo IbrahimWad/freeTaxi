@@ -9,9 +9,9 @@ import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../customText.dart';
-import 'colors/borderColor.dart';
-import 'colors/mainColor.dart';
+import 'customText.dart';
+import 'constant/colors/borderColor.dart';
+import 'constant/colors/mainColor.dart';
 
 class CustomDropDownButton extends StatelessWidget {
   var items;
@@ -47,11 +47,6 @@ class CustomDropDownButton extends StatelessWidget {
                 )),
             onChanged: onChanged,
             hint: hint,
-            validator: (value) {
-              if (value.isNull) {
-                return 'الرجاء قم بتحديد نوع الجنس';
-              }
-            },
             items: ['ذكر', 'انثى']
                 .map((gender) => DropdownMenuItem(
                     // alignment: AlignmentDirectional.topStart,
