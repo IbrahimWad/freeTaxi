@@ -113,6 +113,7 @@ class AuthviewModel extends GetxController {
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
+    box.write('phone', "+964${phoneController!.value.text}");
 
     var responseBody = res.data;
     print(responseBody);
@@ -156,8 +157,9 @@ class AuthviewModel extends GetxController {
       printError();
 
       print('error here');
-      startTimer(59);
+
       Get.off(Verfication());
+      startTimer(60);
 
       String? commingSms;
       isloading = false;
@@ -187,6 +189,7 @@ class AuthviewModel extends GetxController {
 
       print(_commingSms);
     }
+    startTimer(60);
 
     update();
   }
@@ -223,7 +226,7 @@ class AuthviewModel extends GetxController {
       box.write('phone', '+964${phoneLoginController!.value.text}');
       box.write('otp', responseBody);
       print(responseBody);
-      startTimer(59);
+      startTimer(60);
       Get.off(Verfication());
       String? commingSms;
       try {

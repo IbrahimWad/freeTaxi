@@ -127,6 +127,7 @@ class Login extends GetWidget<AuthviewModel> {
                     onPressed: () {
                       controller.login();
                       Get.closeCurrentSnackbar();
+                      // Get.off(Verfication());
                       print(controller.time.value);
                     },
                   ),
