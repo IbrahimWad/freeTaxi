@@ -28,7 +28,6 @@ class Login extends GetWidget<AuthviewModel> {
             child: Form(
               key: controller.loginKey,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: Get.height * .1,
@@ -128,7 +127,6 @@ class Login extends GetWidget<AuthviewModel> {
                     onPressed: () {
                       controller.login();
                       Get.closeCurrentSnackbar();
-                      // Get.off(Verfication());
                       print(controller.time.value);
                     },
                   ),

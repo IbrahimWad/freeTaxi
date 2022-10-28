@@ -113,19 +113,20 @@ class Verfication extends StatelessWidget {
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   CustomText(text: 'لم يصلك الرمز بعد ؟'),
-                  GestureDetector(
-                      onTap: controller.time.value != "00:00"
-                          ? null
-                          : () {
-                              Get.closeCurrentSnackbar();
-
-                              controller.resend();
-                              print('error');
-                            },
-                      child: CustomText(
-                        text: 'اعادة ارسال الرمز',
-                        color: primary,
-                      )),
+                  Obx(
+                    () => GestureDetector(
+                        onTap: controller.time != "00:00"
+                            ? null
+                            : () {
+                                Get.closeCurrentSnackbar();
+                                controller.resend();
+                                print('error');
+                              },
+                        child: CustomText(
+                          text: 'اعادة ارسال الرمز',
+                          color: primary,
+                        )),
+                  ),
                 ]),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.03,
