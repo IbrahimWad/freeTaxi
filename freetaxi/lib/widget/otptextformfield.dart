@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:freetaxi/widget/constant/colors/backgrondColor.dart';
 import 'package:get/get.dart';
 
 class OtpTextformFiled extends StatelessWidget {
@@ -22,7 +23,6 @@ class OtpTextformFiled extends StatelessWidget {
     return Container(
       width: Get.width * 0.15,
       child: TextFormField(
-        textInputAction: TextInputAction.next,
         inputFormatters: [
           LengthLimitingTextInputFormatter(1),
           FilteringTextInputFormatter.digitsOnly,
@@ -34,6 +34,10 @@ class OtpTextformFiled extends StatelessWidget {
         onChanged: onChanged,
         onSaved: onsave,
         decoration: InputDecoration(
+          fillColor: bg_input,
+          filled: true,
+          isDense: true,
+          contentPadding: EdgeInsets.fromLTRB(10, 17.25, 10, 17.25),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: color),

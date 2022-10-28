@@ -32,6 +32,7 @@ class CustomText extends StatelessWidget {
           fontSize: fontsize,
           height: height,
         ),
+        textDirection: TextDirection.ltr,
       ),
     );
   }

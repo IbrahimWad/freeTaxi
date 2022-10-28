@@ -75,29 +75,23 @@ class Verfication extends StatelessWidget {
                   ],
                 ),
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       OtpTextformFiled(
                           onChanged: (value) {
-                            FocusScope.of(context).nextFocus();
+                            Get.closeCurrentSnackbar();
+                            // FocusScope.of(context).nextFocus();
                           },
                           validator: (value) {
                             controller.validateOtp(value);
                           },
-                          controller: controller.otpController1!,
+                          controller: controller.otpController4!,
                           color: primary),
                       OtpTextformFiled(
                           onChanged: (value) {
-                            FocusScope.of(context).nextFocus();
-                          },
-                          validator: (value) {
-                            controller.validateOtp(value);
-                          },
-                          controller: controller.otpController2!,
-                          color: primary),
-                      OtpTextformFiled(
-                          onChanged: (value) {
-                            FocusScope.of(context).nextFocus();
+                            Get.closeCurrentSnackbar();
+
+                            //  FocusScope.of(context).nextFocus();
                           },
                           validator: (value) {
                             controller.validateOtp(value);
@@ -106,12 +100,25 @@ class Verfication extends StatelessWidget {
                           color: primary),
                       OtpTextformFiled(
                           onChanged: (value) {
-                            FocusScope.of(context).nextFocus();
+                            Get.closeCurrentSnackbar();
+
+                            // FocusScope.of(context).nextFocus();
                           },
                           validator: (value) {
                             controller.validateOtp(value);
                           },
-                          controller: controller.otpController4!,
+                          controller: controller.otpController2!,
+                          color: primary),
+                      OtpTextformFiled(
+                          onChanged: (value) {
+                            Get.closeCurrentSnackbar();
+
+                            // FocusScope.of(context).nextFocus();
+                          },
+                          validator: (value) {
+                            controller.validateOtp(value);
+                          },
+                          controller: controller.otpController1!,
                           color: primary),
                     ]),
 
@@ -120,12 +127,15 @@ class Verfication extends StatelessWidget {
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   CustomText(text: 'لم يصلك الرمز بعد ؟'),
-                  InkWell(
-                      onTap: () {
-                        controller.resend();
+                  GestureDetector(
+                      onTap: controller.seconds != 59
+                          ? null
+                          : () {
+                              Get.closeCurrentSnackbar();
 
-                        print('error');
-                      },
+                              controller.resend();
+                              print('error');
+                            },
                       child: CustomText(
                         text: 'اعادة ارسال الرمز',
                         color: primary,
