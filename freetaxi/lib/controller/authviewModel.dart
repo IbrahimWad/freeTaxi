@@ -156,7 +156,7 @@ class AuthviewModel extends GetxController {
       printError();
 
       print('error here');
-      startTimer();
+      startTimer(59);
       Get.off(Verfication());
 
       String? commingSms;
@@ -223,7 +223,7 @@ class AuthviewModel extends GetxController {
       box.write('phone', '+964${phoneLoginController!.value.text}');
       box.write('otp', responseBody);
       print(responseBody);
-      startTimer();
+      startTimer(59);
       Get.off(Verfication());
       String? commingSms;
       try {
@@ -255,8 +255,6 @@ class AuthviewModel extends GetxController {
     }
 
     update();
-
-    stopTimer();
   }
 
   String? _commingSms = 'SignOTP';
@@ -282,7 +280,8 @@ class AuthviewModel extends GetxController {
     isloading = false;
 
     var check = res.data['message'];
-    if (check == 'OTP Is Not Valid!') {
+    if (check == 'OTP Is Not Valid!' ||
+        res.data['message'] == "\"otp\" is not allowed to be empty") {
       Get.showSnackbar(GetBar(
           messageText: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -297,6 +296,7 @@ class AuthviewModel extends GetxController {
           snackPosition: SnackPosition.TOP,
           backgroundColor: bg_warning));
     } else {
+      Get.closeCurrentSnackbar();
       Get.off(HomePage());
     }
     print(responseBody);
@@ -304,8 +304,9 @@ class AuthviewModel extends GetxController {
   }
 
   resend() async {
+    Get.closeCurrentSnackbar();
     final dio = Dio();
-    startTimer();
+    startTimer(59);
     final res = await dio.post(
       signOTP,
       data: {'phone': box.read('phone')},
@@ -338,50 +339,28 @@ class AuthviewModel extends GetxController {
     return null;
   }
 
-  static const maxSeconds = 59;
-  var seconds = maxSeconds;
-  Timer? timer;
-
-  void startTimer({bool rest = true}) {
-    if (rest) {
-      resetTimer();
-      update();
-    }
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (seconds > 0) {
-        seconds--;
-        update();
+  Timer? _timer;
+  int remainingSeconsd = 1;
+  final time = '00:00'.obs;
+  void startTimer(int seconds) {
+    const duration = Duration(seconds: 1);
+    remainingSeconsd = seconds;
+    _timer = Timer.periodic(duration, (Timer timer) {
+      if (remainingSeconsd == -1) {
+        timer.cancel();
       } else {
-        stopTimer(rest: false);
-        resetTimer();
+        int minutes = remainingSeconsd ~/ 60;
+        int seconds = (remainingSeconsd % 60);
+        time.value = minutes.toString().padLeft(2, "0") +
+            ":" +
+            seconds.toString().padLeft(2, "0");
+        remainingSeconsd--;
       }
     });
+
     update();
   }
 
   /// Stop Timer
-  void stopTimer({bool rest = true}) {
-    if (rest) {
-      resetTimer();
-      update();
-    }
-    timer?.cancel();
-    update();
-  }
 
-  /// Reset Timer
-  void resetTimer() {
-    seconds = maxSeconds;
-    update();
-  }
-
-  /// is Timer Active?
-  bool isTimerRuning() {
-    return timer == null ? false : timer!.isActive;
-  }
-
-  /// is Timer Completed?
-  bool isCompleted() {
-    return seconds == maxSeconds || seconds == 0;
-  }
 }

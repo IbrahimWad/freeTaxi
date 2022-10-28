@@ -28,6 +28,7 @@ class Login extends GetWidget<AuthviewModel> {
             child: Form(
               key: controller.loginKey,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: Get.height * .1,
@@ -42,7 +43,7 @@ class Login extends GetWidget<AuthviewModel> {
                     fontWeight: FontWeight.normal,
                     color: text_2,
                     fontsize: 16,
-                    alignment: Alignment.bottomRight,
+                    alignment: Alignment.centerRight,
                   ),
                   CustomText(
                     text: 'التطبيق',
@@ -76,7 +77,7 @@ class Login extends GetWidget<AuthviewModel> {
                               horizontal: 32, vertical: 46),
                           child: CustomText(
                             alignment: Alignment.centerLeft,
-                            text: '964+',
+                            text: '+964',
                             color: primary,
                           ),
                         ),
@@ -127,6 +128,8 @@ class Login extends GetWidget<AuthviewModel> {
                     onPressed: () {
                       controller.login();
                       Get.closeCurrentSnackbar();
+                      // Get.off(Verfication());
+                      print(controller.time.value);
                     },
                   ),
                 ],

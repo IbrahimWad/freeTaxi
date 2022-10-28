@@ -53,27 +53,13 @@ class Verfication extends StatelessWidget {
                 SizedBox(
                   height: Get.height * 0.04,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CustomText(
-                      text: controller.seconds.toString(),
-                      alignment: Alignment.center,
-                      fontsize: 32,
-                    ),
-                    CustomText(
-                      text: ':',
-                      alignment: Alignment.center,
-                      fontsize: 32,
-                    ),
-                    CustomText(
-                      text: '00',
-                      alignment: Alignment.topCenter,
-                      fontsize: 32,
-                    ),
-                  ],
-                ),
+                Obx(() => Center(
+                      child: CustomText(
+                        text: controller.time.value,
+                        alignment: Alignment.center,
+                        fontsize: 32,
+                      ),
+                    )),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -128,7 +114,7 @@ class Verfication extends StatelessWidget {
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   CustomText(text: 'لم يصلك الرمز بعد ؟'),
                   GestureDetector(
-                      onTap: controller.seconds != 59
+                      onTap: controller.time.value != "00:00"
                           ? null
                           : () {
                               Get.closeCurrentSnackbar();
