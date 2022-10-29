@@ -25,15 +25,8 @@ class AuthviewModel extends GetxController {
     'انثى',
   ];
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  final GlobalKey<FormState> OTPformkey = GlobalKey<FormState>();
   final GlobalKey<FormState> loginKey = GlobalKey<FormState>();
-  TextEditingController? phoneController,
-      nameController,
-      otpController1,
-      otpController2,
-      otpController3,
-      phoneLoginController,
-      otpController4;
+  TextEditingController? phoneLoginController, phoneController, nameController;
 
   var phone = '';
   var name = '';
@@ -48,10 +41,6 @@ class AuthviewModel extends GetxController {
     super.onInit();
     phoneController = TextEditingController();
     nameController = TextEditingController();
-    otpController1 = TextEditingController();
-    otpController2 = TextEditingController();
-    otpController3 = TextEditingController();
-    otpController4 = TextEditingController();
     phoneLoginController = TextEditingController();
     //startTimer();
   }
@@ -63,7 +52,6 @@ class AuthviewModel extends GetxController {
 
   @override
   void dispose() {
-    AltSmsAutofill().unregisterListener();
     super.dispose();
   }
 
@@ -158,38 +146,13 @@ class AuthviewModel extends GetxController {
 
       print('error here');
 
-      Get.off(Verfication());
-      startTimer(60);
-
-      String? commingSms;
       isloading = false;
       if (isloading == false) {
         Get.back();
         print('hello');
       }
-      try {
-        commingSms = await AltSmsAutofill().listenForSms;
-        final res = await dio.post(
-          verifyOTP,
-          data: {
-            'phone': box.read('phone'),
-            'hashedOTP': box.read('otp'),
-            'otp': commingSms,
-          },
-          options: Options(contentType: Headers.formUrlEncodedContentType),
-        );
-        Get.off(HomePage());
-        Get.closeCurrentSnackbar();
-      } on PlatformException {
-        commingSms = 'Failed to get Sms.';
-        print(commingSms);
-      }
-      if (Get.routing.current != "/Verfication") return;
-      _commingSms = commingSms;
-
-      print(_commingSms);
+      Get.off(Verfication());
     }
-    startTimer(60);
 
     update();
   }
@@ -226,144 +189,31 @@ class AuthviewModel extends GetxController {
       box.write('phone', '+964${phoneLoginController!.value.text}');
       box.write('otp', responseBody);
       print(responseBody);
-      startTimer(60);
+
+      printError();
+      isloading = false;
+      if (isloading == false) {
+        Get.back();
+      }
       Get.off(Verfication());
-      String? commingSms;
-      try {
-        commingSms = await AltSmsAutofill().listenForSms;
-        final res = await dio.post(
-          verifyOTP,
-          data: {
-            'phone': box.read('phone'),
-            'hashedOTP': box.read('otp'),
-            'otp': commingSms,
-          },
-          options: Options(contentType: Headers.formUrlEncodedContentType),
-        );
-        Get.closeCurrentSnackbar();
+      update();
+    }
 
-        Get.off(HomePage());
-      } on PlatformException {
-        commingSms = 'Failed to get Sms.';
-        print(commingSms);
+    String? validatePhone(String value) {
+      if (value.length != 10) {
+        return 'الرجاء ادخال رقم هاتف صحيح';
       }
-      if (Get.routing.current != "/Verfication") return;
-      _commingSms = commingSms;
+      return null;
     }
 
-    printError();
-    isloading = false;
-    if (isloading == false) {
-      Get.back();
-    }
-
-    update();
-  }
-
-  String? _commingSms = 'SignOTP';
-
-  verfication() async {
-    final dio = Dio();
-
-    print(
-        '${otpController1!.value.text}${otpController2!.value.text}${otpController3!.value.text}${otpController4!.value.text}');
-    isloading = true;
-
-    final res = await dio.post(
-      verifyOTP,
-      data: {
-        'phone': box.read('phone'),
-        'hashedOTP': box.read('otp'),
-        'otp':
-            '${otpController1!.value.text}${otpController2!.value.text}${otpController3!.value.text}${otpController4!.value.text}'
-      },
-      options: Options(contentType: Headers.formUrlEncodedContentType),
-    );
-    var responseBody = res.data['token'];
-    isloading = false;
-
-    var check = res.data['message'];
-    if (check == 'OTP Is Not Valid!' ||
-        res.data['message'] == "\"otp\" is not allowed to be empty") {
-      Get.showSnackbar(GetBar(
-          messageText: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomText(text: 'الرمز غير صحيح'),
-            ],
-          ),
-          onTap: (SnackBar) {
-            Get.closeCurrentSnackbar();
-          },
-          // colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: bg_warning));
-    } else {
-      Get.closeCurrentSnackbar();
-      Get.off(HomePage());
-    }
-    print(responseBody);
-    update();
-  }
-
-  resend() async {
-    Get.closeCurrentSnackbar();
-    final dio = Dio();
-    startTimer(59);
-    final res = await dio.post(
-      signOTP,
-      data: {'phone': box.read('phone')},
-      options: Options(contentType: Headers.formUrlEncodedContentType),
-    );
-    var responseBody = res.data['otp'];
-    box.write('phone', '+964${phoneLoginController!.value.text}');
-    box.write('otp', responseBody);
-  }
-
-  String? validatePhone(String value) {
-    if (value.length != 10) {
-      return 'الرجاء ادخال رقم هاتف صحيح';
-    }
-    return null;
-  }
-
-  String? validateOtp(String value) {
-    if (value.length != 1) {
-      return 'الرجاء ادخال رقم هاتف صحيح';
-    }
-    return null;
-  }
-
-  String? validatename(String value) {
-    if (value.length < 6) {
-      Alignment.centerRight;
-      return 'الرجاء قم بادخال الاسم الكامل';
-    }
-    return null;
-  }
-
-  Timer? _timer;
-  int remainingSeconsd = 1;
-  final time = '00:00'.obs;
-  void startTimer(int seconds) {
-    const duration = Duration(seconds: 1);
-    remainingSeconsd = seconds;
-    _timer = Timer.periodic(duration, (Timer timer) {
-      if (remainingSeconsd == -1) {
-        timer.cancel();
-      } else {
-        int minutes = remainingSeconsd ~/ 60;
-        int seconds = (remainingSeconsd % 60);
-        time.value = minutes.toString().padLeft(2, "0") +
-            ":" +
-            seconds.toString().padLeft(2, "0");
-        remainingSeconsd--;
+    String? validatename(String value) {
+      if (value.length < 6) {
+        Alignment.centerRight;
+        return 'الرجاء قم بادخال الاسم الكامل';
       }
-    });
+      return null;
+    }
 
-    update();
+    /// Stop Timer
   }
-
-  /// Stop Timer
-
 }

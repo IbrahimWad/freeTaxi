@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:freetaxi/controller/authviewModel.dart';
+import 'package:freetaxi/controller/otpController.dart';
 import 'package:freetaxi/widget/constant/colors/backgrondColor.dart';
 import 'package:freetaxi/widget/constant/colors/mainColor.dart';
 import 'package:freetaxi/widget/constant/colors/textColor.dart';
@@ -19,8 +20,8 @@ class Verfication extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bg_white,
-      body: GetBuilder<AuthviewModel>(
-        init: AuthviewModel(),
+      body: GetBuilder<OtpController>(
+        init: OtpController(),
         builder: (controller) => ListView(
           children: [
             SizedBox(

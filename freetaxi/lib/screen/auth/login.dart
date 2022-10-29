@@ -62,7 +62,11 @@ class Login extends GetWidget<AuthviewModel> {
                               controller.phone = value;
                             },
                             validator: (value) {
-                              return controller.validatePhone(value);
+                              if (value.length != 10 && value == null) {
+                                return 'الرجاء ادخال رقم هاتف صحيح';
+                              } else if (value.isNotEmpty) {
+                                return null;
+                              }
                             },
                             controller: controller.phoneLoginController!,
                             keyboardType: TextInputType.number,
@@ -128,7 +132,6 @@ class Login extends GetWidget<AuthviewModel> {
                       controller.login();
                       Get.closeCurrentSnackbar();
                       // Get.off(Verfication());
-                      print(controller.time.value);
                     },
                   ),
                 ],
