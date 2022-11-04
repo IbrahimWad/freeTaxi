@@ -62,7 +62,7 @@ class Login extends GetWidget<AuthviewModel> {
                               controller.phone = value;
                             },
                             validator: (value) {
-                              if (value.length != 10 && value == null) {
+                              if (value.length != 10 || value == null) {
                                 return 'الرجاء ادخال رقم هاتف صحيح';
                               } else if (value.isNotEmpty) {
                                 return null;

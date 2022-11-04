@@ -58,6 +58,7 @@ class OtpController extends GetxController {
   }
 
   resend() async {
+    startTimer(60);
     Get.closeCurrentSnackbar();
     final dio = Dio();
     final res = await dio.post(
@@ -87,9 +88,14 @@ class OtpController extends GetxController {
 
     print(
         '${otpController1!.value.text}${otpController2!.value.text}${otpController3!.value.text}${otpController4!.value.text}');
-    final res = SendOtp(box.read('phone'), box.read('otp'),
-        "${otpController1!.value.text}${otpController2!.value.text}${otpController3!.value.text}${otpController4!.value.text}");
-    var responseBody = res.data['token'];
+    final res = await dio.post(verifyOTP,
+        data: {
+          'phone': box.read('phone'),
+          'hashedOTP': box.read('otp'),
+          'otp':
+              '${otpController1!.value.text}${otpController2!.value.text}${otpController3!.value.text}${otpController4!.value.text}',
+        },
+        options: Options(contentType: Headers.formUrlEncodedContentType));
 
     var check = res.data['message'];
     if (check == 'OTP Is Not Valid!' ||
@@ -111,7 +117,7 @@ class OtpController extends GetxController {
       Get.closeCurrentSnackbar();
       Get.off(HomePage());
     }
-    print(responseBody);
+
     update();
   }
 
@@ -125,6 +131,7 @@ class OtpController extends GetxController {
       commingSms = await AltSmsAutofill().listenForSms;
       final res = SendOtp(box.read('phone'), box.read('otp'), '$commingSms');
       Get.off(HomePage());
+      print(commingSms);
       Get.closeCurrentSnackbar();
     } on PlatformException {
       commingSms = 'Failed to get Sms.';

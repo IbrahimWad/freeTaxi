@@ -185,7 +185,15 @@ class AuthviewModel extends GetxController {
     );
     var responseBody = res.data['otp'];
     var check = res.data['message'];
-    if (check == "SMS Message Sent Successfully!") {
+    if (check != "SMS Message Sent Successfully!") {
+      isloading = false;
+      if (isloading == false) {
+        Get.back();
+      }
+
+    }
+    else if(check == "SMS Message Sent Successfully!"){
+     
       box.write('phone', '+964${phoneLoginController!.value.text}');
       box.write('otp', responseBody);
       print(responseBody);
@@ -198,7 +206,6 @@ class AuthviewModel extends GetxController {
       Get.off(Verfication());
       update();
     }
-
     String? validatePhone(String value) {
       if (value.length != 10) {
         return 'الرجاء ادخال رقم هاتف صحيح';
